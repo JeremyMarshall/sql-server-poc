@@ -1,0 +1,24 @@
+version: '3.0'
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports:
+    - "1433:1433"
+    environment: 
+    - "ACCEPT_EULA=Y"
+    - "SA_PASSWORD=P8ssw0rd"
+    volumes:
+    - data:/var/opt/mssql/data
+    - log:/var/opt/mssql/log
+  tools:
+    image: mcr.microsoft.com/mssql-tools
+    entrypoint: ["/opt/mssql-tools/bin/sqlcmd", "-S", "sql", "-U", "sa", "-P", "P8ssw0rd"]
+    working_dir: /rawdata
+    links:
+    - sql
+    volumes:
+    - ./rawdata:/rawdata
+    
+volumes:
+  data: {}
+  log: {}
